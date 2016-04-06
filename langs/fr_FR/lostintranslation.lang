@@ -9,3 +9,5 @@ LostInTranslationAbout = A propos du module Lost In Translation
 SelectLangToCustomize=Entrez un terme et sélectionnez une langue afin de lancer la recherche. Vous pourrez ensuite personnaliser les traductions.
 CustomFolderNotWriteable=Pour permettre à ce module de fonctionner, son sous-répertoire "customlangs/langs" doit être accessible en écriture par le serveur web. Merci de donner les permissions adéquates et de revenir sur cet écran pour commencer à personnaliser vos traductions.
 NewTranslationSaved=Nouvelle traduction enregistrée
+NbTerms=Nombre de traductions de base
+NbCustomTerms=Nombre de traduction personnalisées

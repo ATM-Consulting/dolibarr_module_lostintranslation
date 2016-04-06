@@ -132,10 +132,19 @@ if(!$lit->isFolderWriteable()) {
 	print '<td align="center" width="20">&nbsp;</td>';
 	print '<td align="center" width="100">'.$langs->trans("Value").'</td>'."\n";
 	
+	$stats = '';
+	if(!empty($lit)) {
+		$stats = '<br>';
+		$stats.= '&nbsp;&nbsp;'. picto_from_langcode($lit->lang);
+		$stats.= ' '.$langs->trans('NbTerms').' : ' . $lit->nbTerms . '<br>';
+		$stats.= '&nbsp;&nbsp;'. picto_from_langcode($lit->lang);
+		$stats.= ' '.$langs->trans('NbCustomTerms').' : ' . $lit->nbTrans . '<br>';
+	}
+	
 	// Select lang to customize
 	$var=!$var;
 	print '<tr '.$bc[$var].'>';
-	print '<td>'.$langs->trans("SelectLangToCustomize").'</td>';
+	print '<td>'.$langs->trans("SelectLangToCustomize").$stats.'</td>';
 	print '<td align="center">&nbsp;</td>';
 	print '<td align="right">';
 	print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
@@ -148,12 +157,6 @@ if(!$lit->isFolderWriteable()) {
 	print '</td></tr>';
 	
 	print '</table>';
-	
-	if(!empty($lit)) {
-		echo picto_from_langcode($lit->lang) . '<br>';
-		echo ' - NB TERMS : ' . $lit->nbTerms . '<br>';
-		echo ' - NB CUSTOM TERMS : ' . $lit->nbTrans . '<br>';
-	}
 	
 	
 	if(!empty($lit->searchRes)) {
