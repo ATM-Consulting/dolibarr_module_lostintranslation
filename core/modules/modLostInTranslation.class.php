@@ -110,7 +110,7 @@ class modLostInTranslation extends DolibarrModules
 		// Example: $this->const=array(0=>array('MYMODULE_MYNEWCONST1','chaine','myvalue','This is a constant to add',1),
 		//                             1=>array('MYMODULE_MYNEWCONST2','chaine','myvalue','This is another constant to add',0, 'current', 1)
 		// );
-		$this->const = array(0=>array('MAIN_FORCELANGDIR','chaine','/lostintranslation/customlangs','This is a constant to add',1,'current',1));
+		$this->const = array(0=>array('MAIN_FORCELANGDIR','chaine','/lostintranslation/customlangs','Directory where custom translations will be stored',1,'current',1));
 
 		// Array to add new pages in new tabs
 		// Example: $this->tabs = array('objecttype:+tabname1:Title1:mylangfile@lostintranslation:$user->rights->lostintranslation->read:/lostintranslation/mynewtab1.php?id=__ID__',  	// To add a new tab identified by code tabname1

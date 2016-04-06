@@ -35,7 +35,8 @@ require_once '../lib/lostintranslation.lib.php';
 require_once '../class/lostintranslation.class.php';
 
 // Translations
-$langs->load("lostintranslation@lostintranslation");
+$langs->load('main');
+$langs->load('lostintranslation@lostintranslation');
 
 // Access control
 if (! $user->admin) {
@@ -46,6 +47,11 @@ if (! $user->admin) {
 $action = GETPOST('action', 'alpha');
 $word = GETPOST('word', 'alpha');
 $langtosearch = GETPOST('langtosearch', 'alpha');
+if(empty($langtosearch)) $langtosearch = $user->conf->MAIN_LANG_DEFAULT;
+if(empty($langtosearch)) $langtosearch = $conf->global->MAIN_LANG_DEFAULT;
+
+// Init LostInTranslationObject
+$lit = new LostInTranslation($langtosearch);
 
 /*
  * Actions
@@ -78,20 +84,27 @@ if (preg_match('/del_(.*)/',$action,$reg))
 	}
 }
 
-if($action == 'search_word' && !empty($word)) {
-	$lit = new LostInTranslation($langtosearch);
+if(!empty($word)) {
 	$lit->searchWordInLangFiles($word);
+}
+
+if($action == 'save_translation') {
+	$langfile = GETPOST('langfile', 'alpha');
+	$key = GETPOST('key', 'alpha');
+	$newTranslation = GETPOST('newtranslation', 'alpha');
+	$lit->saveNewTranslation($langfile, $key, $newTranslation);
+	
+	if(empty($lit->error)) setEventMessages($langs->trans('NewTranslationSaved'), array());
 }
 
 /*
  * View
  */
 $page_name = "LostInTranslationSetup";
-llxHeader('', $langs->trans($page_name));
+llxHeader('', $langs->trans($page_name),'','',0,0,array('/lostintranslation/js/lostintranslation.js'));
 
 // Subheader
-$linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">'
-    . $langs->trans("BackToModuleList") . '</a>';
+$linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">' . $langs->trans("BackToModuleList") . '</a>';
 print_fiche_titre($langs->trans($page_name), $linkback);
 
 // Configuration header
@@ -104,58 +117,83 @@ dol_fiche_head(
     "lostintranslation@lostintranslation"
 );
 
-// Setup page goes here
-$form=new Form($db);
-$formadmin=new FormAdmin($db);
-$var=false;
-print '<table class="noborder" width="100%">';
-print '<tr class="liste_titre">';
-print '<td>'.$langs->trans("Parameters").'</td>'."\n";
-print '<td align="center" width="20">&nbsp;</td>';
-print '<td align="center" width="100">'.$langs->trans("Value").'</td>'."\n";
+// If customlangs folder is not writeable, module can't be used
+if(!$lit->isFolderWriteable()) {
+	echo $langs->trans('CustomFolderNotWriteable');
+} else {
 
-// Select lang to customize
-$current_lang = $user->conf->MAIN_LANG_DEFAULT;
-if(empty($current_lang)) $current_lang = $conf->global->MAIN_LANG_DEFAULT;
-if(empty($current_lang)) $current_lang = 'en_US';
-$var=!$var;
-print '<tr '.$bc[$var].'>';
-print '<td>'.$langs->trans("SelectLangToCustomize").'</td>';
-print '<td align="center">&nbsp;</td>';
-print '<td align="right">';
-print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
-print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-print '<input type="hidden" name="action" value="search_word">';
-print '<input type="text" name="word" value="'.$word.'">';
-print $formadmin->select_language($current_lang,'langtosearch');
-print '<input type="submit" class="button" value="'.$langs->trans("Search").'">';
-print '</form>';
-print '</td></tr>';
-
-print '</table>';
-
-if(!empty($lit->searchRes)) {
+	// Setup page goes here
+	$form=new Form($db);
+	$formadmin=new FormAdmin($db);
+	$var=false;
 	print '<table class="noborder" width="100%">';
 	print '<tr class="liste_titre">';
-	print '<td>'.$langs->trans("File").'</td>'."\n";
-	print '<td>'.$langs->trans("Key").'</td>'."\n";
-	print '<td>'.$langs->trans("Value").'</td>'."\n";
-	print '</tr>';
+	print '<td>'.$langs->trans("Parameters").'</td>'."\n";
+	print '<td align="center" width="20">&nbsp;</td>';
+	print '<td align="center" width="100">'.$langs->trans("Value").'</td>'."\n";
 	
-	foreach($lit->searchRes as $langfile => $trads) {
-		foreach($trads as $key => $val) {
-			$val = str_replace($word, '<span style="background-color: yellow;">'.$word.'</span>', $val);
-			print '<tr>';
-			print '<td>'.$langfile.'</td>'."\n";
-			print '<td>'.$key.'</td>'."\n";
-			print '<td>'.$val.'</td>'."\n";
-			print '</tr>';
+	// Select lang to customize
+	$var=!$var;
+	print '<tr '.$bc[$var].'>';
+	print '<td>'.$langs->trans("SelectLangToCustomize").'</td>';
+	print '<td align="center">&nbsp;</td>';
+	print '<td align="right">';
+	print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
+	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+	print '<input type="hidden" name="action" value="search_word">';
+	print '<input type="text" name="word" value="'.$word.'">';
+	print $formadmin->select_language($langtosearch,'langtosearch');
+	print '<input type="submit" class="button" value="'.$langs->trans("Search").'">';
+	print '</form>';
+	print '</td></tr>';
+	
+	print '</table>';
+	
+	if(!empty($lit)) {
+		echo picto_from_langcode($lit->lang) . '<br>';
+		echo ' - NB TERMS : ' . $lit->nbTerms . '<br>';
+		echo ' - NB CUSTOM TERMS : ' . $lit->nbTrans . '<br>';
+	}
+	
+	
+	if(!empty($lit->searchRes)) {
+		print '<table class="noborder" width="100%">';
+		print '<tr class="liste_titre">';
+		print '<td>'.$langs->trans("File").'</td>'."\n";
+		print '<td>'.$langs->trans("TranslationKey").'</td>'."\n";
+		print '<td>'.$langs->trans("CurrentTranslation").'</td>'."\n";
+		print '<td>'.$langs->trans("CustomizeTranslation").'</td>'."\n";
+		print '<td>&nbsp;</td>'."\n";
+		print '</tr>';
+		
+		foreach($lit->searchRes as $langfile => $trads) {
+			foreach($trads as $key => $val) {
+				$inputkey = 'TTrans['.$langfile.']['.$key.']';
+				$input = '<form method="POST">';
+				$input.= '<input type="hidden" name="action" value="save_translation" />';
+				$input.= '<input type="hidden" name="langtosearch" value="'.$langtosearch.'" />';
+				$input.= '<input type="hidden" name="word" value="'.$word.'" />';
+				$input.= '<input type="hidden" name="langfile" value="'.$langfile.'" />';
+				$input.= '<input type="hidden" name="key" value="'.$key.'" />';
+				$input.= '<input type="text" value="'.$val['current'].'" name="newtranslation" class="flat" />';
+				$input.= '<input type="image" src="'.img_picto('', 'save.png@lostintranslation', '', false, 1).'" style="vertical-align: middle;" />';
+				$input.= '</form>';
+				//$btsave = '<a href="#" class="saveTranslation">'.img_picto($langs->trans('Save'), 'save.png@lostintranslation').'</a>';
+				
+				print '<tr>';
+				print '<td>'.$langfile.'</td>'."\n";
+				print '<td>'.$key.'</td>'."\n";
+				print '<td>'.$val['current'].'</td>'."\n";
+				print '<td>'.$input.'</td>'."\n";
+				//print '<td>'.$btsave.'</td>'."\n";
+				print '</tr>';
+			}
 		}
 	}
+	
+	//echo '<pre>';
+	//print_r($lit->searchRes);
 }
-
-//echo '<pre>';
-//print_r($lit->searchRes);
 
 llxFooter();
 
