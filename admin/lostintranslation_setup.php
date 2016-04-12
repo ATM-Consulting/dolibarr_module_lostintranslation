@@ -70,7 +70,7 @@ if (preg_match('/set_(.*)/',$action,$reg))
 		dol_print_error($db);
 	}
 }
-	
+
 if (preg_match('/del_(.*)/',$action,$reg))
 {
 	$code=$reg[1];
@@ -94,7 +94,7 @@ if($action == 'save_translation') {
 	$key = GETPOST('key', 'alpha');
 	$newTranslation = GETPOST('newtranslation', 'alpha');
 	$lit->saveNewTranslation($langfile, $key, $newTranslation);
-	
+
 	if(empty($lit->error)) setEventMessages($langs->trans('NewTranslationSaved'), array());
 }
 
@@ -132,7 +132,7 @@ if(!$lit->isFolderWriteable()) {
 	print '<td>'.$langs->trans("Parameters").'</td>'."\n";
 	print '<td align="center" width="20">&nbsp;</td>';
 	print '<td align="center" width="100">'.$langs->trans("Value").'</td>'."\n";
-	
+
 	$stats = '';
 	if(!empty($lit)) {
 		$stats = '<br>';
@@ -141,7 +141,7 @@ if(!$lit->isFolderWriteable()) {
 		$stats.= '&nbsp;&nbsp;'. picto_from_langcode($lit->lang);
 		$stats.= ' '.$langs->trans('NbCustomTerms').' : ' . $lit->nbTrans . '<br>';
 	}
-	
+
 	// Select lang to customize
 	$var=!$var;
 	print '<tr '.$bc[$var].'>';
@@ -156,10 +156,10 @@ if(!$lit->isFolderWriteable()) {
 	print '<input type="submit" class="button" value="'.$langs->trans("Search").'">';
 	print '</form>';
 	print '</td></tr>';
-	
+
 	print '</table>';
-	
-	
+
+
 	if(!empty($lit->searchRes)) {
 		print '<table class="noborder" width="100%">';
 		print '<tr class="liste_titre">';
@@ -169,7 +169,7 @@ if(!$lit->isFolderWriteable()) {
 		print '<td>'.$langs->trans("CustomizeTranslation").'</td>'."\n";
 		print '<td>&nbsp;</td>'."\n";
 		print '</tr>';
-		
+
 		foreach($lit->searchRes as $langfile => $trads) {
 			foreach($trads as $key => $val) {
 				$inputkey = 'TTrans['.$langfile.']['.$key.']';
@@ -179,11 +179,11 @@ if(!$lit->isFolderWriteable()) {
 				$input.= '<input type="hidden" name="word" value="'.$word.'" />';
 				$input.= '<input type="hidden" name="langfile" value="'.$langfile.'" />';
 				$input.= '<input type="hidden" name="key" value="'.$key.'" />';
-				$input.= '<input type="text" value="'.$val['current'].'" name="newtranslation" class="flat" />';
+				$input.= '<textarea  rows="4" cols="50" name="newtranslation" class="flat">'.$val['current'].'</textarea>';
 				$input.= '<input type="image" src="'.img_picto('', 'save.png@lostintranslation', '', false, 1).'" style="vertical-align: middle;" />';
 				$input.= '</form>';
 				//$btsave = '<a href="#" class="saveTranslation">'.img_picto($langs->trans('Save'), 'save.png@lostintranslation').'</a>';
-				
+
 				print '<tr>';
 				print '<td>'.$langfile.'</td>'."\n";
 				print '<td>'.$key.'</td>'."\n";
@@ -194,7 +194,7 @@ if(!$lit->isFolderWriteable()) {
 			}
 		}
 	}
-	
+
 	//echo '<pre>';
 	//print_r($lit->searchRes);
 }
