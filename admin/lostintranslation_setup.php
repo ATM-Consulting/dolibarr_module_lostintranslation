@@ -36,6 +36,7 @@ require_once '../class/lostintranslation.class.php';
 
 // Translations
 $langs->load('main');
+$langs->load('admin');
 $langs->load('lostintranslation@lostintranslation');
 
 // Access control
