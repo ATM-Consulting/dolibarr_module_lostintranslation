@@ -179,7 +179,7 @@ if(!$lit->isFolderWriteable()) {
 				$input.= '<input type="hidden" name="word" value="'.$word.'" />';
 				$input.= '<input type="hidden" name="langfile" value="'.$langfile.'" />';
 				$input.= '<input type="hidden" name="key" value="'.$key.'" />';
-				$input.= '<textarea  rows="4" cols="50" name="newtranslation" class="flat" />'.$val['current'].'</textarea>';
+				$input.= '<textarea  rows="4" cols="50" name="newtranslation" class="flat">'.$val['current'].'</textarea>';
 				$input.= '<input type="image" src="'.img_picto('', 'save.png@lostintranslation', '', false, 1).'" style="vertical-align: middle;" />';
 				$input.= '</form>';
 				//$btsave = '<a href="#" class="saveTranslation">'.img_picto($langs->trans('Save'), 'save.png@lostintranslation').'</a>';
