@@ -74,14 +74,19 @@ class LostInTranslation {
 		
 		dol_mkdir($customLangPath);
 		
-		// On remplace directement dans le fichier la traduction
-		$f = file_get_contents($customLangFile);
-		$newfile = preg_replace($pattern, $newTranslation, $f);
-		
-		// Si la traduction n'existait pas avant, on l'ajoute dans le fichier
-		if($newfile == $f) {
-			$newfile = $f . $newTranslation;
+		// On remplace directement dans le fichier la traduction s'il existe
+		if(is_file($customLangFile)) {
+			$f = file_get_contents($customLangFile);
+			$newfile = preg_replace($pattern, $newTranslation, $f);
+			
+			// Si la traduction n'existait pas avant, on l'ajoute dans le fichier
+			if($newfile == $f) {
+				$newfile = $f . $newTranslation;
+			}
+		} else {
+			$newfile = $newTranslation;
 		}
+		
 		file_put_contents($customLangFile, $newfile);
 	}
 	
