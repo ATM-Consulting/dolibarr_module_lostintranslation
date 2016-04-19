@@ -1,3 +1,7 @@
 div.formcustomtrans {
 	display: none;
 }
+
+span.highlight {
+	background-color: yellow;
+}

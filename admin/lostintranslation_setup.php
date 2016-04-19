@@ -168,6 +168,7 @@ if(!$lit->isFolderWriteable()) {
 	print '<input type="radio" name="search_option" value="custom" '. ($search_option == 'custom' ? 'checked': '') .'> '.$langs->trans('SearchInCurrentTrans').'<br>';
 	print '<input type="radio" name="search_option" value="official" '. ($search_option == 'official' ? 'checked': '') .'> '.$langs->trans('SearchInOfficialTrans').'<br>';
 	print '<input type="radio" name="search_option" value="key" '. ($search_option == 'key' ? 'checked': '') .'> '.$langs->trans('SearchInKeys').'<br>';
+	// TODO : ajouter option pour recherche case insensitive, pour recherche exacte / commence par
 	print '</div>';
 	print '</td>';
 	print '</tr>';
@@ -190,12 +191,14 @@ if(!$lit->isFolderWriteable()) {
 		print '<td>'.$langs->trans("CustomizedTranslation").'</td>'."\n";
 		print '<td width="40">&nbsp;</td>'."\n";
 		print '</tr>';
+		
+		$btedit = '<a class="edittrans">'.img_edit().'</a>';
+		$btreset = '<a class="resettrans">'.img_picto($langs->trans('ResetToOfficialTranslation'), 'disable.png').'</a>';
+		$replace = '<span class="highlight">'.$word.'</span>';
 
 		foreach($lit->searchRes as $langfile => $trads) {
 			foreach($trads as $key => $val) {
-				$inputkey = 'TTrans['.$langfile.']['.$key.']';
-				$btedit = '<a class="edittrans">'.img_edit().'</a>';
-				$btreset = '<a class="resettrans">'.img_picto($langs->trans('ResetToOfficialTranslation'), 'disable.png').'</a>';
+				$val[$search_option] = str_replace($word, $replace, $val[$search_option]);
 				
 				$input = '<div class="formcustomtrans"><form method="POST">';
 				$input.= '<input type="hidden" name="action" value="save_translation" />';
@@ -210,7 +213,7 @@ if(!$lit->isFolderWriteable()) {
 
 				print '<tr '.$bc[$var].'>';
 				print '<td>'.$langfile.'</td>'."\n";
-				print '<td>'.$key.'</td>'."\n";
+				print '<td>'.$val['key'].'</td>'."\n";
 				if($val['official'] === $val['custom']) {
 					print '<td colspan="2">'.$input.'</td>'."\n";
 					$btaction = $btedit;
