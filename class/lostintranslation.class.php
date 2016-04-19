@@ -47,7 +47,7 @@ class LostInTranslation {
 					}
 					
 					// Tri des traductions par clé
-					ksort($this->tabWord[$fname]);
+					if(!empty($this->tabWord[$fname])) ksort($this->tabWord[$fname]);
 				}
 			}
 			closedir($dirHandle);
