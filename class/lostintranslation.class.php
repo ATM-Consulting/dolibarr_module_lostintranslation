@@ -45,10 +45,15 @@ class LostInTranslation {
 							$this->nbTerms++;
 						}
 					}
+					
+					// Tri des traductions par clé
+					ksort($this->tabWord[$fname]);
 				}
 			}
 			closedir($dirHandle);
 		}
+
+		ksort($this->tabWord);
 	}
 	
 	function searchWordInLangFiles($word, $search_option) {
