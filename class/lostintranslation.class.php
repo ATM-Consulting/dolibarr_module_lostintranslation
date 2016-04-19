@@ -64,8 +64,25 @@ class LostInTranslation {
 	}
 	
 	function saveNewTranslation($langfile,$key,$newTranslation) {
+		global $langs;
+		
+		// On vérifie si la traduction perso est différente de l'officielle
+		if($this->tabWord[$langfile][$key]['official'] === $newTranslation
+			|| $this->tabWord[$langfile][$key]['custom'] === $newTranslation) {
+			setEventMessages($langs->trans('TranslationUnchanged'), array(), 'warnings');
+			return;
+		}
+		
+		if(!empty($newTranslation)) {
+			$this->tabWord[$langfile][$key]['custom'] = $newTranslation;
+			$newTranslation = $key . '=' . $newTranslation . "\n";
+			$msg = 'NewTranslationSaved';
+		} else { // Si la traduction passée est vide c'est qu'on veut remettre la traduction officielle
+			$this->tabWord[$langfile][$key]['custom'] = $this->tabWord[$langfile][$key]['official'];
+			$msg = 'OfficialTranslationRestored';
+		}
+		
 		$pattern = '/' .$key. "=.*\n". '/';
-		$newTranslation = $key . '=' . $newTranslation . "\n";
 		
 		// Chemin du fichier de langs perso
 		$customLangDir = dol_buildpath($this->customLangDir);
@@ -88,6 +105,8 @@ class LostInTranslation {
 		}
 		
 		file_put_contents($customLangFile, $newfile);
+		
+		setEventMessages($langs->trans($msg), array());
 	}
 	
 	// Tells if custom folder needed for custom translation files is writable or not

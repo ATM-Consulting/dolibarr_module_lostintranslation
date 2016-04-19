@@ -17,3 +17,6 @@ CustomizedTranslation=Traduction personnalisée
 SearchInCurrentTrans=Chercher dans les traductions actuelles
 SearchInOfficialTrans=Chercher dans les traductions officielles
 SearchInKeys=Chercher dans les clés de traduction
+TranslationUnchanged=Traduction non modifiée
+ResetToOfficialTranslation=Réinitialiser avec la traduction officielle
+OfficialTranslationRestored=Traduction remplacée par l'officielle

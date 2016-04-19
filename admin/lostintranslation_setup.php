@@ -87,24 +87,22 @@ if (preg_match('/del_(.*)/',$action,$reg))
 	}
 }
 
-if(!empty($word)) {
-	$lit->searchWordInLangFiles($word, $search_option);
-}
-
 if($action == 'save_translation') {
 	$langfile = GETPOST('langfile', 'alpha');
 	$key = GETPOST('key', 'alpha');
 	$newTranslation = GETPOST('newtranslation', 'alpha');
 	$lit->saveNewTranslation($langfile, $key, $newTranslation);
+}
 
-	if(empty($lit->error)) setEventMessages($langs->trans('NewTranslationSaved'), array());
+if(!empty($word)) {
+	$lit->searchWordInLangFiles($word, $search_option);
 }
 
 /*
  * View
  */
 $page_name = "LostInTranslationSetup";
-llxHeader('', $langs->trans($page_name),'','',0,0,array('/lostintranslation/js/lostintranslation.js'));
+llxHeader('', $langs->trans($page_name),'','',0,0,array('/lostintranslation/js/lostintranslation.js'),array('/lostintranslation/css/lostintranslation.css'));
 
 // Subheader
 $linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">' . $langs->trans("BackToModuleList") . '</a>';
@@ -190,13 +188,16 @@ if(!$lit->isFolderWriteable()) {
 		print '<td>'.$langs->trans("TranslationKey").'</td>'."\n";
 		print '<td>'.$langs->trans("OfficialTranslation").'</td>'."\n";
 		print '<td>'.$langs->trans("CustomizedTranslation").'</td>'."\n";
-		print '<td>&nbsp;</td>'."\n";
+		print '<td width="40">&nbsp;</td>'."\n";
 		print '</tr>';
 
 		foreach($lit->searchRes as $langfile => $trads) {
 			foreach($trads as $key => $val) {
 				$inputkey = 'TTrans['.$langfile.']['.$key.']';
-				$input = '<form method="POST">';
+				$btedit = '<a class="edittrans">'.img_edit().'</a>';
+				$btreset = '<a class="resettrans">'.img_picto($langs->trans('ResetToOfficialTranslation'), 'disable.png').'</a>';
+				
+				$input = '<div class="formcustomtrans"><form method="POST">';
 				$input.= '<input type="hidden" name="action" value="save_translation" />';
 				$input.= '<input type="hidden" name="langtosearch" value="'.$langtosearch.'" />';
 				$input.= '<input type="hidden" name="word" value="'.$word.'" />';
@@ -204,15 +205,21 @@ if(!$lit->isFolderWriteable()) {
 				$input.= '<input type="hidden" name="key" value="'.$key.'" />';
 				$input.= '<textarea  rows="4" cols="50" name="newtranslation" class="flat">'.$val['custom'].'</textarea>';
 				$input.= '<input type="image" src="'.img_picto('', 'save.png@lostintranslation', '', false, 1).'" style="vertical-align: middle;" />';
-				$input.= '</form>';
-				//$btsave = '<a href="#" class="saveTranslation">'.img_picto($langs->trans('Save'), 'save.png@lostintranslation').'</a>';
+				$input.= '</form></div>';
+				$input.= '<div class="customtrans">'.$val['custom'].'</div>';
 
 				print '<tr '.$bc[$var].'>';
 				print '<td>'.$langfile.'</td>'."\n";
 				print '<td>'.$key.'</td>'."\n";
-				print '<td>'.$val['official'].'</td>'."\n";
-				print '<td>'.$input.'</td>'."\n";
-				//print '<td>'.$btsave.'</td>'."\n";
+				if($val['official'] === $val['custom']) {
+					print '<td colspan="2">'.$input.'</td>'."\n";
+					$btaction = $btedit;
+				} else {
+					print '<td>'.$val['official'].'</td>'."\n";
+					print '<td>'.$input.'</td>'."\n";
+					$btaction = $btedit . $btreset;
+				}
+				print '<td>'.$btaction.'</td>'."\n";
 				print '</tr>';
 				
 				$var = !$var;
