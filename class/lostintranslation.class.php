@@ -34,12 +34,14 @@ class LostInTranslation {
 						$key = trim($keyval[0]);
 						$val = trim($keyval[1]);
 
-						// Si on a déjà rencontré la clé, c'est qu'une traduction perso existe, on stocke l'ancienne dans 'old'
+						// Si on a déjà rencontré la clé, c'est qu'une traduction perso existe, on stocke l'ancienne dans 'official'
 						if(isset($this->tabWord[$fname][$key])) {
-							$this->tabWord[$fname][$key]['old'] = $val;
+							$this->tabWord[$fname][$key]['official'] = $val;
 							$this->nbTrans++;
 						} else {
-							$this->tabWord[$fname][$key]['current'] = $val;
+							$this->tabWord[$fname][$key]['key'] = $key; // Pour faciliter la recherche
+							$this->tabWord[$fname][$key]['custom'] = $val;
+							$this->tabWord[$fname][$key]['official'] = $val;
 							$this->nbTerms++;
 						}
 					}
@@ -49,12 +51,12 @@ class LostInTranslation {
 		}
 	}
 	
-	function searchWordInLangFiles($word) {
+	function searchWordInLangFiles($word, $search_option) {
 		global $langs;
 		
 		foreach($this->tabWord as $langfile => $trads) {
 			foreach($trads as $key => $val) {
-				if(strpos($val['current'], $word) !== FALSE) {
+				if(strpos($val[$search_option], $word) !== FALSE) {
 					$this->searchRes[$langfile][$key] = $val;
 				}
 			}
