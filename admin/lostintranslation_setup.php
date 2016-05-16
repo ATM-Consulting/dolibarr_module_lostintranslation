@@ -198,8 +198,7 @@ if(!$lit->isFolderWriteable()) {
 
 		foreach($lit->searchRes as $langfile => $trads) {
 			foreach($trads as $key => $val) {
-				$val[$search_option] = str_replace($word, $replace, $val[$search_option]);
-				
+				// Textarea pour personnaliser la traduction
 				$input = '<div class="formcustomtrans"><form method="POST">';
 				$input.= '<input type="hidden" name="action" value="save_translation" />';
 				$input.= '<input type="hidden" name="langtosearch" value="'.$langtosearch.'" />';
@@ -209,12 +208,18 @@ if(!$lit->isFolderWriteable()) {
 				$input.= '<textarea  rows="4" cols="50" name="newtranslation" class="flat">'.$val['custom'].'</textarea>';
 				$input.= '<input type="image" src="'.img_picto('', 'save.png@lostintranslation', '', false, 1).'" style="vertical-align: middle;" />';
 				$input.= '</form></div>';
+				
+				$customTrans = ($val['official'] !== $val['custom']);
+				// Ajout d'un highlight sur le texte cherché
+				$val[$search_option] = str_replace($word, $replace, $val[$search_option]);
+				if(!$customTrans && $search_option == 'official') $val['custom'] = $val['official'];
+				
 				$input.= '<div class="customtrans">'.$val['custom'].'</div>';
 
 				print '<tr '.$bc[$var].'>';
 				print '<td>'.$langfile.'</td>'."\n";
 				print '<td>'.$val['key'].'</td>'."\n";
-				if($val['official'] === $val['custom']) {
+				if(!$customTrans) {
 					print '<td colspan="2">'.$input.'</td>'."\n";
 					$btaction = $btedit;
 				} else {

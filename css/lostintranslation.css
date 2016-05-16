@@ -5,3 +5,7 @@ div.formcustomtrans {
 span.highlight {
 	background-color: yellow;
 }
+
+a.resettrans, a.edittrans {
+	cursor: pointer;
+}
