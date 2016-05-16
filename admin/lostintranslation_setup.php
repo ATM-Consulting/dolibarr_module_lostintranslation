@@ -52,6 +52,7 @@ if(empty($langtosearch)) $langtosearch = $user->conf->MAIN_LANG_DEFAULT;
 if(empty($langtosearch)) $langtosearch = $conf->global->MAIN_LANG_DEFAULT;
 $search_option = GETPOST('search_option');
 if(empty($search_option)) $search_option = 'custom';
+$other_options = GETPOST('other_options');
 
 // Init LostInTranslationObject
 $lit = new LostInTranslation($langtosearch);
@@ -95,7 +96,7 @@ if($action == 'save_translation') {
 }
 
 if(!empty($word)) {
-	$lit->searchWordInLangFiles($word, $search_option);
+	$lit->searchWordInLangFiles($word, $search_option, $other_options);
 }
 
 /*
@@ -162,14 +163,21 @@ if(!$lit->isFolderWriteable()) {
 	
 	$var=!$var;
 	print '<tr '.$bc[$var].'>';
-	print '<td colspan="2">';
+	print '<td>';
 	//print '<a href="" id="moreoptionslink">['.$langs->trans("MoreOptions").']</a>';
-	print '<div id="moreoptions">';
-	print '<input type="radio" name="search_option" value="custom" '. ($search_option == 'custom' ? 'checked': '') .'> '.$langs->trans('SearchInCurrentTrans').'<br>';
-	print '<input type="radio" name="search_option" value="official" '. ($search_option == 'official' ? 'checked': '') .'> '.$langs->trans('SearchInOfficialTrans').'<br>';
-	print '<input type="radio" name="search_option" value="key" '. ($search_option == 'key' ? 'checked': '') .'> '.$langs->trans('SearchInKeys').'<br>';
+	//print '<div id="moreoptions">';
+	print '<input type="radio" id="search_custom" name="search_option" value="custom" '. ($search_option == 'custom' ? 'checked ': '') .'/> ';
+	print '<label for="search_custom">'.$langs->trans('SearchInCurrentTrans').'</label><br>';
+	print '<input type="radio" id="search_official" name="search_option" value="official" '. ($search_option == 'official' ? 'checked ': '') .'/> ';
+	print '<label for="search_official">'.$langs->trans('SearchInOfficialTrans').'</label><br>';
+	print '<input type="radio" id="search_key" name="search_option" value="key" '. ($search_option == 'key' ? 'checked ': '') .'/> ';
+	print '<label for="search_key">'.$langs->trans('SearchInKeys').'</label><br>';
+	//print '</div>';
+	print '</td>';
+	print '<td>';
+	print '<input type="checkbox" id="case_insensitive" name="other_options[case_insensitive]" '. (!empty($other_options['case_insensitive']) ? 'checked ': '') .'/> ';
+	print '<label for="case_insensitive">'.$langs->trans('SearchCaseInsensitive').'</label><br>';
 	// TODO : ajouter option pour recherche case insensitive, pour recherche exacte / commence par
-	print '</div>';
 	print '</td>';
 	print '</tr>';
 	
@@ -194,7 +202,9 @@ if(!$lit->isFolderWriteable()) {
 		
 		$btedit = '<a class="edittrans">'.img_edit().'</a>';
 		$btreset = '<a class="resettrans">'.img_picto($langs->trans('ResetToOfficialTranslation'), 'disable.png').'</a>';
-		$replace = '<span class="highlight">'.$word.'</span>';
+		$pattern = '/'.$word.'/';
+		if(!empty($other_options['case_insensitive'])) $pattern .= 'i';
+		$replace = '<span class="highlight">$0</span>';
 
 		foreach($lit->searchRes as $langfile => $trads) {
 			foreach($trads as $key => $val) {
@@ -211,7 +221,7 @@ if(!$lit->isFolderWriteable()) {
 				
 				$customTrans = ($val['official'] !== $val['custom']);
 				// Ajout d'un highlight sur le texte cherché
-				$val[$search_option] = str_replace($word, $replace, $val[$search_option]);
+				$val[$search_option] = preg_replace($pattern, $replace, $val[$search_option]);
 				if(!$customTrans && $search_option == 'official') $val['custom'] = $val['official'];
 				
 				$input.= '<div class="customtrans">'.$val['custom'].'</div>';
@@ -234,9 +244,6 @@ if(!$lit->isFolderWriteable()) {
 			}
 		}
 	}
-
-	//echo '<pre>';
-	//print_r($lit->searchRes);
 }
 
 llxFooter();

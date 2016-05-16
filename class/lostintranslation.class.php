@@ -56,12 +56,15 @@ class LostInTranslation {
 		ksort($this->tabWord);
 	}
 	
-	function searchWordInLangFiles($word, $search_option) {
+	function searchWordInLangFiles($word, $search_option, $other_options) {
 		global $langs;
+		
+		$func = 'strpos';
+		if(!empty($other_options['case_insensitive'])) $func = 'stripos';
 		
 		foreach($this->tabWord as $langfile => $trads) {
 			foreach($trads as $key => $val) {
-				if(strpos($val[$search_option], $word) !== FALSE) {
+				if($func($val[$search_option], $word) !== FALSE) {
 					$this->searchRes[$langfile][$key] = $val;
 				}
 			}

@@ -9,3 +9,7 @@ span.highlight {
 a.resettrans, a.edittrans {
 	cursor: pointer;
 }
+
+input[type="radio"], input[type="checkbox"], label {
+	vertical-align: middle;
+}
