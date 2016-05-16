@@ -185,6 +185,13 @@ if(!$lit->isFolderWriteable()) {
 	print '<tr '.$bc[$var].'>';
 	print '<td colspan="2" align="center"><input type="submit" class="button" value="'.$langs->trans("Search").'"></td>';
 	print '</tr>';
+	
+	if($lit->nbRes > 0) {
+		$var=!$var;
+		print '<tr '.$bc[$var].'>';
+		print '<td colspan="2" align="center">'.$lit->nbRes.' '.$langs->trans("TranslationsFound").'</td>';
+		print '</tr>';
+	}
 
 	print '</table>';
 

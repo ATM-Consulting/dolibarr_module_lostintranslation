@@ -8,6 +8,9 @@ class LostInTranslation {
 	var $nbTerms = 0;
 	var $nbTrans = 0;
 	
+	var $searchRes = array();
+	var $nbRes = 0;
+	
 	// Constructeur qui charge dans tabWord toutes les traductions de la langue passée en paramètre
 	function __construct($langtoload='en_US') {
 		global $langs;
@@ -66,6 +69,7 @@ class LostInTranslation {
 			foreach($trads as $key => $val) {
 				if($func($val[$search_option], $word) !== FALSE) {
 					$this->searchRes[$langfile][$key] = $val;
+					$this->nbRes++;
 				}
 			}
 		}
