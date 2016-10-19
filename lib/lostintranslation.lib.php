@@ -33,8 +33,12 @@ function lostintranslationAdminPrepareHead()
     $head = array();
 
     $head[$h][0] = dol_buildpath("/lostintranslation/admin/lostintranslation_setup.php", 1);
-    $head[$h][1] = $langs->trans("Parameters");
-    $head[$h][2] = 'settings';
+    $head[$h][1] = $langs->trans("Translation");
+    $head[$h][2] = 'translation';
+    $h++;
+    $head[$h][0] = dol_buildpath("/lostintranslation/admin/lostintranslation_mentions_setup.php", 1);
+    $head[$h][1] = $langs->trans("TranslationsMentionsPDF");
+    $head[$h][2] = 'mention';
     $h++;
     $head[$h][0] = dol_buildpath("/lostintranslation/admin/lostintranslation_about.php", 1);
     $head[$h][1] = $langs->trans("About");

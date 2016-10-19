@@ -113,7 +113,7 @@ print_fiche_titre($langs->trans($page_name), $linkback);
 $head = lostintranslationAdminPrepareHead();
 dol_fiche_head(
     $head,
-    'settings',
+    'translation',
     $langs->trans("Module104855Name"),
     0,
     "lostintranslation@lostintranslation"
@@ -135,7 +135,7 @@ if(!$lit->isFolderWriteable()) {
 	
 	print '<table class="noborder" width="100%">';
 	print '<tr class="liste_titre">';
-	print '<td>'.$langs->trans("Parameters").'</td>'."\n";
+	print '<td>'.$langs->trans("Translation").'</td>'."\n";
 	print '<td align="center">&nbsp;</td>';
 	print '</tr>';
 
