@@ -128,11 +128,11 @@ if(!$lit->isFolderWriteable()) {
 	$form=new Form($db);
 	$formadmin=new FormAdmin($db);
 	$var=false;
-	
+
 	print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
-	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+	print '<input type="hidden" name="token" value="'.newToken().'" />';
 	print '<input type="hidden" name="action" value="search_word">';
-	
+
 	print '<table class="noborder" width="100%">';
 	print '<tr class="liste_titre">';
 	print '<td>'.$langs->trans("Parameters").'</td>'."\n";
@@ -153,14 +153,14 @@ if(!$lit->isFolderWriteable()) {
 	print '<tr '.$bc[$var].'>';
 	print '<td colspan="2">'.$langs->trans("SelectLangToCustomize").$stats.'</td>';
 	print '</tr>';
-	
+
 	$var=!$var;
 	print '<tr '.$bc[$var].'><td>';
 	print '<input type="text" class="flat" size="30" name="word" value="'.$word.'">';
 	print '</td><td>';
 	print $formadmin->select_language($langtosearch,'langtosearch');
 	print '</td></tr>';
-	
+
 	$var=!$var;
 	print '<tr '.$bc[$var].'>';
 	print '<td>';
@@ -180,12 +180,12 @@ if(!$lit->isFolderWriteable()) {
 	// TODO : ajouter option pour recherche case insensitive, pour recherche exacte / commence par
 	print '</td>';
 	print '</tr>';
-	
+
 	$var=!$var;
 	print '<tr '.$bc[$var].'>';
 	print '<td colspan="2" align="center"><input type="submit" class="button" value="'.$langs->trans("Search").'"></td>';
 	print '</tr>';
-	
+
 	if($lit->nbRes > 0) {
 		$var=!$var;
 		print '<tr '.$bc[$var].'>';
@@ -206,7 +206,7 @@ if(!$lit->isFolderWriteable()) {
 		print '<td>'.$langs->trans("CustomizedTranslation").'</td>'."\n";
 		print '<td width="40">&nbsp;</td>'."\n";
 		print '</tr>';
-		
+
 		$btedit = '<a class="edittrans">'.img_edit().'</a>';
 		$btreset = '<a class="resettrans">'.img_picto($langs->trans('ResetToOfficialTranslation'), 'disable.png').'</a>';
 		$pattern = '/'.$word.'/';
@@ -225,12 +225,12 @@ if(!$lit->isFolderWriteable()) {
 				$input.= '<textarea  rows="4" cols="50" name="newtranslation" class="flat">'.$val['custom'].'</textarea>';
 				$input.= '<input type="image" src="'.img_picto('', 'save.png@lostintranslation', '', false, 1).'" style="vertical-align: middle;" />';
 				$input.= '</form></div>';
-				
+
 				$customTrans = ($val['official'] !== $val['custom']);
 				// Ajout d'un highlight sur le texte cherché
 				$val[$search_option] = preg_replace($pattern, $replace, $val[$search_option]);
 				if(!$customTrans && $search_option == 'official') $val['custom'] = $val['official'];
-				
+
 				$input.= '<div class="customtrans">'.$val['custom'].'</div>';
 
 				print '<tr '.$bc[$var].'>';
@@ -246,7 +246,7 @@ if(!$lit->isFolderWriteable()) {
 				}
 				print '<td>'.$btaction.'</td>'."\n";
 				print '</tr>';
-				
+
 				$var = !$var;
 			}
 		}
